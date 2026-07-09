@@ -1,13 +1,12 @@
-import fs from "node:fs";
+import path from "node:path";
 import multer from "multer";
-import { createStoredFilename, uploadFolderPath } from "../utils/file.js";
+import { config } from "../config.js";
+import { createStoredFilename } from "../utils/file.js";
 
 const storage = multer.diskStorage({
   destination: (_request, file, callback) => {
     const folder = file.fieldname === "original" ? "originals" : "references";
-    const destination = uploadFolderPath(folder);
-    fs.mkdirSync(destination, { recursive: true });
-    callback(null, destination);
+    callback(null, path.join(config.uploadRoot, folder));
   },
   filename: (_request, file, callback) => {
     callback(null, createStoredFilename(file.originalname, file.mimetype));

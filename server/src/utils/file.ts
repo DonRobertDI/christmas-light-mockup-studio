@@ -7,15 +7,9 @@ const folders = ["originals", "references", "generated"] as const;
 type UploadFolder = (typeof folders)[number];
 
 export function ensureUploadDirectories() {
-  fs.mkdirSync(config.uploadRoot, { recursive: true });
-
   for (const folder of folders) {
-    fs.mkdirSync(uploadFolderPath(folder), { recursive: true });
+    fs.mkdirSync(path.join(config.uploadRoot, folder), { recursive: true });
   }
-}
-
-export function uploadFolderPath(folder: UploadFolder) {
-  return path.join(config.uploadRoot, folder);
 }
 
 export function createStoredFilename(originalName: string, mimeType?: string) {
@@ -36,7 +30,7 @@ export function toPublicUploadPath(folder: UploadFolder, filename: string) {
 }
 
 export function generatedFilePath(filename: string) {
-  return path.join(uploadFolderPath("generated"), filename);
+  return path.join(config.uploadRoot, "generated", filename);
 }
 
 export function removeFileIfPresent(filePath?: string) {
