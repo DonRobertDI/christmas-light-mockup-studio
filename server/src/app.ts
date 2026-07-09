@@ -1,3 +1,5 @@
+import fs from "node:fs";
+import path from "node:path";
 import cors from "cors";
 import express, { type NextFunction, type Request, type Response } from "express";
 import helmet from "helmet";
@@ -8,6 +10,8 @@ import { mockupRouter } from "./routes/mockup.routes.js";
 import { removeFileIfPresent } from "./utils/file.js";
 
 export const app = express();
+const clientIndexPath = path.join(config.clientDistRoot, "index.html");
+const staticUploadRoutes = ["/uploads", "/api/uploads"] as const;
 
 app.disable("x-powered-by");
 app.use(
@@ -18,16 +22,18 @@ app.use(
 app.use(cors({ origin: "http://localhost:5173" }));
 app.use(express.json({ limit: "100kb" }));
 
-app.use(
-  "/uploads",
-  express.static(config.uploadRoot, {
-    dotfiles: "deny",
-    fallthrough: false,
-    immutable: true,
-    maxAge: "1d",
-    index: false,
-  }),
-);
+for (const route of staticUploadRoutes) {
+  app.use(
+    route,
+    express.static(config.uploadRoot, {
+      dotfiles: "deny",
+      fallthrough: false,
+      immutable: true,
+      maxAge: "1d",
+      index: false,
+    }),
+  );
+}
 
 app.get("/api/health", (_request, response) => {
   response.json({
@@ -37,6 +43,21 @@ app.get("/api/health", (_request, response) => {
 });
 app.use("/api/customers", customerRouter);
 app.use("/api/customers/:customerId/mockups", mockupRouter);
+
+if (fs.existsSync(clientIndexPath)) {
+  app.use(
+    express.static(config.clientDistRoot, {
+      fallthrough: true,
+      immutable: true,
+      maxAge: "1d",
+      index: false,
+    }),
+  );
+
+  app.get(/^(?!\/api(?:\/|$)|\/uploads(?:\/|$)).*/, (_request, response) => {
+    response.sendFile(clientIndexPath);
+  });
+}
 
 app.use((_request, response) => {
   response.status(404).json({ message: "Route not found." });

@@ -25,6 +25,8 @@ server/data/*.sqlite
 server/data/*.sqlite*
 server/data/*.db
 server/data/*.db*
+server/data/*.json
+server/data/*.json.*
 
 # Uploaded/generated images
 uploads/originals/*
