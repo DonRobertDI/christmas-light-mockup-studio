@@ -1,0 +1,46 @@
+# Dependencies
+node_modules/
+.npm-cache/
+
+# Build outputs
+dist/
+client/dist/
+server/dist/
+*.tsbuildinfo
+
+# Environment variables
+.env
+.env.local
+.env.development
+.env.production
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Database
+server/data/*.sqlite
+server/data/*.sqlite*
+server/data/*.db
+server/data/*.db*
+
+# Uploaded/generated images
+uploads/originals/*
+uploads/references/*
+uploads/generated/*
+
+!uploads/originals/.gitkeep
+!uploads/references/.gitkeep
+!uploads/generated/.gitkeep
+
+# OS/editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Generated Vite config artifacts
+client/vite.config.js
+client/vite.config.d.ts
