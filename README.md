@@ -109,7 +109,7 @@ DATABASE_PATH=./server/data/database.sqlite
 | Variable | Purpose |
 | --- | --- |
 | `OPENAI_API_KEY` | Server-side OpenAI credential. Never exposed to the client. |
-| `PORT` | Express API port. Defaults to `3000`. |
+| `PORT` | Express API port. Defaults to `3100`. |
 | `DATABASE_PATH` | SQLite file location, resolved from the project root. |
 
 Do not commit `.env`; it is ignored by Git.
@@ -183,6 +183,7 @@ npm start          # Run the compiled backend
 - GPT Image can occasionally shift small property details despite strong preservation instructions. Every result should be reviewed before presenting it as an install plan.
 - There is no delete/archive flow yet, so orphan cleanup and retention policies are not automated.
 - The generated mockup is a sales visualization, not an exact engineering takeoff or guaranteed bulb count.
+- AI image generation will not run until a valid OpenAI API key with image model access is added to `.env`.
 
 ## Future improvements
 
