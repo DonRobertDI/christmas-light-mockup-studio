@@ -6,6 +6,6 @@ import { ensureUploadDirectories } from "./utils/file.js";
 initializeDatabase();
 ensureUploadDirectories();
 
-app.listen(config.port, () => {
-  console.log(`Mockup Studio API is ready at http://localhost:${config.port}`);
+app.listen(config.port, "0.0.0.0", () => {
+  console.log(`Mockup Studio is ready on port ${config.port}`);
 });

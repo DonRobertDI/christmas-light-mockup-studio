@@ -7,6 +7,7 @@ const folders = ["originals", "references", "generated"] as const;
 type UploadFolder = (typeof folders)[number];
 
 export function ensureUploadDirectories() {
+  fs.mkdirSync(config.uploadRoot, { recursive: true });
   for (const folder of folders) {
     fs.mkdirSync(path.join(config.uploadRoot, folder), { recursive: true });
   }

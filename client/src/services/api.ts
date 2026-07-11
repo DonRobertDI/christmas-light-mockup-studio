@@ -6,11 +6,17 @@ import type {
   Mockup,
 } from "../types";
 
+const apiBaseUrl = (import.meta.env.VITE_API_URL ?? "").replace(/\/$/, "");
+
+export function publicUrl(path: string) {
+  return path.startsWith("/") ? `${apiBaseUrl}${path}` : path;
+}
+
 async function request<T>(url: string, init?: RequestInit): Promise<T> {
   let response: Response;
 
   try {
-    response = await fetch(url, init);
+    response = await fetch(publicUrl(url), init);
   } catch {
     throw new Error("The server is unavailable. Check that the app is running and try again.");
   }

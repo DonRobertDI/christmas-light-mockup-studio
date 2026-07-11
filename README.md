@@ -96,21 +96,29 @@ Some OpenAI organizations may need to complete organization verification before 
 
 5. Open `http://localhost:5173`.
 
-The API runs at `http://localhost:3100`. Vite proxies `/api` and `/uploads` to it during development.
+The API runs at `http://localhost:3000`. Vite proxies `/api` and `/uploads` to it during development.
 
 ## Environment variables
 
 ```dotenv
-OPENAI_API_KEY=
+NODE_ENV=development
 PORT=3000
+OPENAI_API_KEY=
 DATABASE_PATH=./server/data/database.sqlite
+UPLOAD_ROOT=./uploads
+CLIENT_URL=http://localhost:5173
+VITE_API_URL=
 ```
 
 | Variable | Purpose |
 | --- | --- |
+| `NODE_ENV` | Runtime mode. Set to `production` when Express should serve the built React app. |
 | `OPENAI_API_KEY` | Server-side OpenAI credential. Never exposed to the client. |
-| `PORT` | Express API port. Defaults to `3100`. |
+| `PORT` | Express server port. Defaults to `3000`; Railway supplies this automatically. |
 | `DATABASE_PATH` | SQLite file location, resolved from the project root. |
+| `UPLOAD_ROOT` | Root directory for original, reference, and generated images. |
+| `CLIENT_URL` | Optional allowed cross-origin frontend URL. Defaults to `http://localhost:5173` in development; omit for same-origin production. |
+| `VITE_API_URL` | Optional API origin compiled into the frontend. Leave blank for the Vite proxy locally and same-origin requests in production. |
 
 Do not commit `.env`; it is ignored by Git.
 
@@ -157,13 +165,59 @@ The database initializes automatically on server startup. Migrations are tracked
 
 Mockups use a foreign key with cascade deletion and are indexed by customer and creation time.
 
-Uploaded files are stored using randomized filenames:
+Uploaded files are stored under `UPLOAD_ROOT` using randomized filenames:
 
 - `uploads/originals`
 - `uploads/references`
 - `uploads/generated`
 
 Only supported image types up to 15 MB are accepted. Express serves the upload root without directory indexes or dotfiles.
+
+## Railway Deployment
+
+Railway can run the frontend and backend together as one Node.js service. In production, Express serves the compiled Vite app while retaining `/api/*` and `/uploads/*` as backend routes.
+
+1. Push the project to GitHub.
+2. Create a new Railway project from the GitHub repository.
+3. Add a persistent volume and mount it at:
+
+   ```text
+   /data
+   ```
+
+4. Add these Railway variables:
+
+   ```dotenv
+   NODE_ENV=production
+   OPENAI_API_KEY=the-real-key
+   DATABASE_PATH=/data/database.sqlite
+   UPLOAD_ROOT=/data/uploads
+   ```
+
+   Railway provides `PORT`; do not set `CLIENT_URL` or `VITE_API_URL` for the normal same-origin deployment.
+
+5. Set the root build command to:
+
+   ```bash
+   npm ci && npm run build
+   ```
+
+6. Set the root start command to:
+
+   ```bash
+   npm start
+   ```
+
+7. Set the health-check path to:
+
+   ```text
+   /api/health
+   ```
+
+8. Generate a Railway public domain for the service.
+9. Keep the service at one replica while it uses SQLite and a single persistent volume.
+
+The database and uploaded images under `/data` persist across deployments. Files elsewhere in the application filesystem may be replaced whenever Railway rebuilds or redeploys the service.
 
 ## Available scripts
 
@@ -177,7 +231,7 @@ npm start          # Run the compiled backend
 
 ## Known limitations
 
-- Images are stored on the local application filesystem; multi-instance deployments need object storage.
+- Images and SQLite require a persistent filesystem. Railway deployments must keep the `/data` volume attached and use one replica.
 - Generation is request/response based. A production deployment should use a background job queue for retries and long-running work.
 - The MVP has no authentication or employee roles and should not be exposed publicly as-is.
 - GPT Image can occasionally shift small property details despite strong preservation instructions. Every result should be reviewed before presenting it as an install plan.

@@ -1,5 +1,6 @@
 import { CalendarDays, ExternalLink, Image, MapPin, Sparkles } from "lucide-react";
 import { formatDate } from "../lib/format";
+import { publicUrl } from "../services/api";
 import type { Customer, Mockup } from "../types";
 import { Modal } from "./Modal";
 
@@ -26,7 +27,7 @@ export function MockupPreviewModal({
         <div className="grid lg:grid-cols-[minmax(0,1fr)_310px]">
           <div className="bg-slate-950 p-3 sm:p-5">
             <img
-              src={mockup.generatedMockupImagePath}
+              src={publicUrl(mockup.generatedMockupImagePath)}
               alt={`Christmas light mockup for ${customer.name}`}
               className="mx-auto max-h-[68vh] w-full rounded-xl object-contain"
             />
@@ -45,13 +46,13 @@ export function MockupPreviewModal({
 
             <div className="grid grid-cols-2 gap-3">
               <a
-                href={mockup.originalImagePath}
+                href={publicUrl(mockup.originalImagePath)}
                 target="_blank"
                 rel="noreferrer"
                 className="group overflow-hidden rounded-xl border border-slate-200"
               >
                 <img
-                  src={mockup.originalImagePath}
+                  src={publicUrl(mockup.originalImagePath)}
                   alt="Original house"
                   className="h-24 w-full object-cover transition group-hover:scale-105"
                 />
@@ -60,13 +61,13 @@ export function MockupPreviewModal({
                 </span>
               </a>
               <a
-                href={mockup.referenceImagePath}
+                href={publicUrl(mockup.referenceImagePath)}
                 target="_blank"
                 rel="noreferrer"
                 className="group overflow-hidden rounded-xl border border-slate-200"
               >
                 <img
-                  src={mockup.referenceImagePath}
+                  src={publicUrl(mockup.referenceImagePath)}
                   alt="Style reference"
                   className="h-24 w-full object-cover transition group-hover:scale-105"
                 />
@@ -88,7 +89,7 @@ export function MockupPreviewModal({
             </div>
 
             <a
-              href={mockup.generatedMockupImagePath}
+              href={publicUrl(mockup.generatedMockupImagePath)}
               target="_blank"
               rel="noreferrer"
               className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-pine-800 px-4 py-3 text-sm font-semibold text-white transition hover:bg-pine-900"

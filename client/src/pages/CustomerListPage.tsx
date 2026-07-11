@@ -15,7 +15,7 @@ import { CreateCustomerModal } from "../components/CreateCustomerModal";
 import { EmptyState } from "../components/EmptyState";
 import { LoadingState } from "../components/LoadingState";
 import { formatDate, initials } from "../lib/format";
-import { api } from "../services/api";
+import { api, publicUrl } from "../services/api";
 import type { CustomerSummary } from "../types";
 
 export function CustomerListPage() {
@@ -205,7 +205,7 @@ export function CustomerListPage() {
                   <div className="flex min-w-0 items-center gap-3.5">
                     {customer.latestMockupPath ? (
                       <img
-                        src={customer.latestMockupPath}
+                        src={publicUrl(customer.latestMockupPath)}
                         alt=""
                         className="h-12 w-12 shrink-0 rounded-xl object-cover ring-1 ring-slate-200"
                       />

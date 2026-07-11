@@ -13,7 +13,7 @@ import { EmptyState } from "../components/EmptyState";
 import { LoadingState } from "../components/LoadingState";
 import { MockupPreviewModal } from "../components/MockupPreviewModal";
 import { formatDate, initials } from "../lib/format";
-import { api } from "../services/api";
+import { api, publicUrl } from "../services/api";
 import type { Customer, Mockup } from "../types";
 
 export function CustomerDetailPage() {
@@ -189,7 +189,7 @@ export function CustomerDetailPage() {
               >
                 <div className="relative aspect-[3/2] overflow-hidden bg-slate-200">
                   <img
-                    src={mockup.generatedMockupImagePath}
+                    src={publicUrl(mockup.generatedMockupImagePath)}
                     alt={`Christmas light concept ${index + 1}`}
                     className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
                   />
@@ -216,12 +216,12 @@ export function CustomerDetailPage() {
                   </div>
                   <div className="flex -space-x-2">
                     <img
-                      src={mockup.originalImagePath}
+                      src={publicUrl(mockup.originalImagePath)}
                       alt=""
                       className="h-8 w-8 rounded-full border-2 border-white object-cover"
                     />
                     <img
-                      src={mockup.referenceImagePath}
+                      src={publicUrl(mockup.referenceImagePath)}
                       alt=""
                       className="h-8 w-8 rounded-full border-2 border-white object-cover"
                     />
